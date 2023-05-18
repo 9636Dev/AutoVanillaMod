@@ -1,13 +1,17 @@
 package org._9636dev.autosmithingtablerewrite;
 
 import com.mojang.logging.LogUtils;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org._9636dev.autosmithingtablerewrite.client.screen.AutoSmithingTableScreen;
 import org._9636dev.autosmithingtablerewrite.common.block.AutoSmithingTableBlocks;
+import org._9636dev.autosmithingtablerewrite.common.blockenttiy.AutoBlockEntities;
+import org._9636dev.autosmithingtablerewrite.common.container.AutoSmithingTableContainers;
 import org._9636dev.autosmithingtablerewrite.common.item.AutoSmithingTableItems;
 import org.slf4j.Logger;
 
@@ -25,6 +29,8 @@ public class AutoSmithingTableMod {
         // Registries
         AutoSmithingTableBlocks.BLOCKS.register(modEventBus);
         AutoSmithingTableItems.ITEMS.register(modEventBus);
+        AutoBlockEntities.BLOCK_ENTITIES.register(modEventBus);
+        AutoSmithingTableContainers.CONTAINERS.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
     }
@@ -35,5 +41,7 @@ public class AutoSmithingTableMod {
 
     private void doClientStuff(final FMLClientSetupEvent event) {
         LOGGER.debug("Initializing AutoSmithingTable client");
+
+        MenuScreens.register(AutoSmithingTableContainers.AUTO_SMITHING_TABLE.get(), AutoSmithingTableScreen::new);
     }
 }
