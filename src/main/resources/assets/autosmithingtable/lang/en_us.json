@@ -1,3 +1,5 @@
-{  "title.autosmithingtable.smithing_table": "Smithing Table (Auto)"
-
+{
+  "title.autosmithingtable.smithing_table": "Upgrade Items (Auto)",
+  "block.autosmithingtable.smithing_table": "Auto Smithing Table",
+  "item.autosmithingtable.smithing_table": "Auto Smithing Table"
 }

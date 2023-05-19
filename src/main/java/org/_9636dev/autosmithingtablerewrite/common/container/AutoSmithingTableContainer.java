@@ -8,7 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import org._9636dev.autosmithingtablerewrite.common.block.AutoSmithingTableBlocks;
+import org._9636dev.autosmithingtablerewrite.common.block.AutoBlocks;
 import org._9636dev.autosmithingtablerewrite.common.blockenttiy.AutoSmithingTableBlockEntity;
 
 public class AutoSmithingTableContainer extends AutoContainer {
@@ -28,7 +28,7 @@ public class AutoSmithingTableContainer extends AutoContainer {
 
     @Override
     protected Block getBlock() {
-        return AutoSmithingTableBlocks.AUTO_SMITHING_TABLE.get();
+        return AutoBlocks.AUTO_SMITHING_TABLE.get();
     }
 
     @Override

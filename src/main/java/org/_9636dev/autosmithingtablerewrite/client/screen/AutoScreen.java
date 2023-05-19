@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("unused")
 public abstract class AutoScreen<T extends AutoContainer> extends AbstractContainerScreen<T> {
+
     public AutoScreen(T pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
     }

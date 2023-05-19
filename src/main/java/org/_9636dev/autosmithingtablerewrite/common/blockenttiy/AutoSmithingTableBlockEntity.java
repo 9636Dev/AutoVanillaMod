@@ -1,6 +1,7 @@
 package org._9636dev.autosmithingtablerewrite.common.blockenttiy;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -15,15 +16,33 @@ import org.jetbrains.annotations.Nullable;
 
 public class AutoSmithingTableBlockEntity extends EnergyBlockEntity {
 
-    public static final int DATA_COUNT = 2;
+    public static final int DATA_COUNT = 3;
+
+    private int progress;
 
     public AutoSmithingTableBlockEntity(BlockPos pPos, BlockState pState) {
         super(AutoBlockEntities.AUTO_SMITHING_TABLE.get(), pPos, pState);
+
+        this.progress = 0;
     }
 
     @Override
     protected void tickServer() {
 
+    }
+
+    @Override
+    protected void saveAdditional(@NotNull CompoundTag pTag) {
+        super.saveAdditional(pTag);
+
+        pTag.putInt("autosmithingtable.progress", this.progress);
+    }
+
+    @Override
+    public void load(@NotNull CompoundTag pTag) {
+        super.load(pTag);
+
+        this.progress = pTag.getInt("autosmithingtable.progress");
     }
 
     @Override
@@ -56,6 +75,7 @@ public class AutoSmithingTableBlockEntity extends EnergyBlockEntity {
                 return switch (pIndex) {
                     case 0 -> getMSBofEnergy();
                     case 1 -> getLSBofEnergy();
+                    case 2 -> progress;
                     default -> throw new IllegalArgumentException("Invalid argument for AutoSmithingTable container data: " + pIndex);
                 };
             }
@@ -64,6 +84,7 @@ public class AutoSmithingTableBlockEntity extends EnergyBlockEntity {
             public void set(int pIndex, int pValue) {
                 switch (pIndex) {
                     case 0,1 -> {}
+                    case 2 -> progress = pValue;
                     default -> throw new IllegalArgumentException("Invalid argument for AutoSmithingTable container data: " + pIndex);
                 }
             }
