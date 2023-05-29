@@ -52,7 +52,7 @@ minecraft {
 
             property 'forge.logging.console.level', 'debug'
 
-                        property 'forge.enabledGameTestNamespaces', 'AutoSmithingTableRewrite'
+            property 'forge.enabledGameTestNamespaces', 'AutoSmithingTableRewrite'
             
             mods {
                 autosmithingtable {

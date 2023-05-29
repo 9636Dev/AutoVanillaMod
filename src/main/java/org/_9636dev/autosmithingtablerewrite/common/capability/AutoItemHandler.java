@@ -65,4 +65,22 @@ public class AutoItemHandler extends ItemStackHandler {
     public ItemOutputFilter getOutputFilter() {
         return outputFilter;
     }
+
+    public boolean slotsAreEmpty(int ... slots) {
+        for (int slot : slots) {
+            if (!this.getStackInSlot(slot).isEmpty()) return false;
+        }
+        return true;
+    }
+
+    public boolean slotsAreFull(int ... slots) {
+        for (int slot : slots) {
+            if (!slotIsFull(slot)) return false;
+        }
+        return true;
+    }
+
+    public boolean slotIsFull(int slot) {
+        return this.getStackInSlot(slot).getCount() == this.getSlotLimit(slot);
+    }
 }

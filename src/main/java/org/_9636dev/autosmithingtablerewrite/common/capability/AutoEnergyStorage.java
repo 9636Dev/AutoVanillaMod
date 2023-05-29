@@ -25,7 +25,7 @@ public class AutoEnergyStorage extends EnergyStorage {
     }
 
     public int getMSBofEnergy() {
-        return getEnergyStored() >> 16;
+        return (getEnergyStored() >> 16) & 0xffff;
     }
 
     public int getLSBofEnergy() {

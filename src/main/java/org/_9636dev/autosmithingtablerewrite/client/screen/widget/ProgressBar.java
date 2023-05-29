@@ -6,6 +6,8 @@ import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.client.event.RenderTooltipEvent;
 import org._9636dev.autosmithingtablerewrite.client.screen.ScreenUtil;
 import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.NotNull;
@@ -83,4 +85,5 @@ public class ProgressBar extends GuiComponent implements Widget, GuiEventListene
 
     @Override
     public void updateNarration(@NotNull NarrationElementOutput pNarrationElementOutput) {}
+
 }
