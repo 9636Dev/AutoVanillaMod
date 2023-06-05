@@ -1,12 +1,10 @@
 package org._9636dev.autosmithingtablerewrite.common.recipe;
 
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
 import org._9636dev.autosmithingtablerewrite.common.config.AutoCommonConfig;
-import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("unused")
 public interface ISmithingRecipe {
     Ingredient getBase();
     Ingredient getAddition();

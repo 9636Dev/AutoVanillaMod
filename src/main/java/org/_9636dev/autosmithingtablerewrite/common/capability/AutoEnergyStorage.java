@@ -25,11 +25,19 @@ public class AutoEnergyStorage extends EnergyStorage {
     }
 
     public int getMSBofEnergy() {
-        return (getEnergyStored() >> 16) & 0xffff;
+        return getMSB(this.getEnergyStored());
+    }
+
+    public static int getMSB(int num) {
+        return (num >> 16) & 0xffff;
     }
 
     public int getLSBofEnergy() {
-        return getEnergyStored() & 0xffff;
+        return getLSB(this.getEnergyStored());
+    }
+
+    public static int getLSB(int num) {
+        return (num & 0xffff);
     }
 
     public void setDirty() {

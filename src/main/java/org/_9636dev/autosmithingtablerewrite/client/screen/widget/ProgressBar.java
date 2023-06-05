@@ -6,16 +6,14 @@ import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.event.RenderTooltipEvent;
 import org._9636dev.autosmithingtablerewrite.client.screen.ScreenUtil;
 import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiFunction;
+import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
-@SuppressWarnings("unused")
 public class ProgressBar extends GuiComponent implements Widget, GuiEventListener, NarratableEntry {
     public enum ProgressDirection {
         LEFT_TO_RIGHT((x, mapped, w) -> x, (y, mapped, h) -> y, (w, mapped) -> mapped, (h, mapped) -> h, false),
@@ -37,13 +35,14 @@ public class ProgressBar extends GuiComponent implements Widget, GuiEventListene
         }
     }
 
-    private final int xPos, yPos, minWidth, minHeight, maxWidth, maxHeight, minXProgress, maxXProgress, minYProgress, maxYProgress;
+    private final int xPos, yPos, minWidth, minHeight, maxWidth, maxHeight;
+    private final IntSupplier minXProgress, maxXProgress, minYProgress, maxYProgress;
     private final ProgressDirection direction;
     private final Supplier<Integer> progress;
     private final Texture texture;
 
     public ProgressBar(int pXPos, int pYPos, int pMinWidth, int pMinHeight, int pMaxWidth, int pMaxHeight,
-                       int pMinXProgress, int pMaxXProgress, int pMinYProgress, int pMaxYProgress,
+                       IntSupplier pMinXProgress, IntSupplier pMaxXProgress, IntSupplier pMinYProgress, IntSupplier pMaxYProgress,
                        ProgressDirection pDirection, Texture texture, Supplier<Integer> progress) {
         this.xPos = pXPos;
         this.yPos = pYPos;
@@ -65,8 +64,15 @@ public class ProgressBar extends GuiComponent implements Widget, GuiEventListene
         this.texture.load();
 
         int progress = this.progress.get();
-        int xMapped = this.direction.isVertical ? this.xPos : ScreenUtil.mapNumberToRange(this.minXProgress, this.maxXProgress, this.minWidth, this.maxWidth, progress);
-        int yMapped = !this.direction.isVertical ? this.yPos : ScreenUtil.mapNumberToRange(this.minYProgress, this.maxYProgress, this.minHeight, this.maxHeight, progress);
+
+        // -1 as max progress makes the progress bar always at 0
+        int xMapped = minWidth;
+        int yMapped = minHeight;
+
+        if (this.maxXProgress.getAsInt() != -1) xMapped = this.direction.isVertical ? this.xPos : ScreenUtil.mapNumberToRange(this.minXProgress.getAsInt(),
+                this.maxXProgress.getAsInt(), this.minWidth, this.maxWidth, progress);
+        if (this.maxYProgress.getAsInt() != -1) yMapped = !this.direction.isVertical ? this.yPos : ScreenUtil.mapNumberToRange(this.minYProgress.getAsInt(),
+                this.maxYProgress.getAsInt(), this.minHeight, this.maxHeight, progress);
 
         this.blit(pPoseStack,
                 direction.xMapFunction.apply(this.xPos, xMapped, this.maxWidth),

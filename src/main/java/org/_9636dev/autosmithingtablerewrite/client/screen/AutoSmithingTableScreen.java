@@ -13,6 +13,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import static org._9636dev.autosmithingtablerewrite.common.blockenttiy.AutoSmithingTableBlockEntity.*;
+
 public class AutoSmithingTableScreen extends AutoScreen<AutoSmithingTableContainer> {
 
     private static final int PROGRESS_BAR_ONS_LEFT = 100;
@@ -44,18 +46,18 @@ public class AutoSmithingTableScreen extends AutoScreen<AutoSmithingTableContain
         int i = this.getGuiLeft();
         int j = this.getGuiTop();
 
-        // TODO: 19.05.23 Make 100_000 not constant
         // TODO: 28.05.23 Progress bar seems to be offset, implemented fix, not tested.
         this.addRenderableWidget(new ProgressBar(i + ENERGY_BAR_ONS_LEFT, j + ENERGY_BAR_ONS_TOP,
-                ENERGY_BAR_WIDTH, 0, ENERGY_BAR_WIDTH, ENERGY_BAR_HEIGHT, 0, 0,
-                0, 100_000, ProgressBar.ProgressDirection.BOTTOM_TO_TOP,
+                ENERGY_BAR_WIDTH, 0, ENERGY_BAR_WIDTH, ENERGY_BAR_HEIGHT, () -> 0, () -> 0,
+                () -> 0, () -> ScreenUtil.convertNumberFromTruncated(menu.data.get(DATA_MAX_ENERGY_MSB),
+                    menu.data.get(DATA_MAX_ENERGY_LSB)), ProgressBar.ProgressDirection.BOTTOM_TO_TOP,
                 new Texture(TEXTURE_LOCATION, ENERGY_BAR_OFS_LEFT, ENERGY_BAR_OFS_TOP),
-                () -> ScreenUtil.convertNumberFromTruncated(menu.data.get(0), menu.data.get(1))));
+                () -> ScreenUtil.convertNumberFromTruncated(menu.data.get(DATA_ENERGY_MSB), menu.data.get(DATA_ENERGY_LSB))));
 
         this.addRenderableWidget(new ProgressBar(i + PROGRESS_BAR_ONS_LEFT, j + PROGRESS_BAR_ONS_TOP,
-                0, PROGRESS_BAR_HEIGHT, PROGRESS_BAR_WIDTH, PROGRESS_BAR_HEIGHT, 0,
-                this.menu.data.get(3), 0, 0, ProgressBar.ProgressDirection.LEFT_TO_RIGHT,
-                new Texture(TEXTURE_LOCATION, PROGRESS_BAR_OFS_LEFT, PROGRESS_BAR_OFS_TOP), () -> menu.data.get(2)));
+                0, PROGRESS_BAR_HEIGHT, PROGRESS_BAR_WIDTH, PROGRESS_BAR_HEIGHT, () -> 0,
+                () -> this.menu.data.get(DATA_MAX_PROGRESS), () -> 0, () -> 0, ProgressBar.ProgressDirection.LEFT_TO_RIGHT,
+                new Texture(TEXTURE_LOCATION, PROGRESS_BAR_OFS_LEFT, PROGRESS_BAR_OFS_TOP), () -> menu.data.get(DATA_PROGRESS)));
     }
 
     @Override
@@ -65,8 +67,8 @@ public class AutoSmithingTableScreen extends AutoScreen<AutoSmithingTableContain
         int i = this.getGuiLeft();
         int j = this.getGuiTop();
 
-        System.out.println("Progress / Energy: " + menu.data.get(2) + "/" +
-                ScreenUtil.convertNumberFromTruncated(menu.data.get(0), menu.data.get(1)));
+        System.out.println("Progress / Energy: " + menu.data.get(DATA_PROGRESS) + "/" +
+                ScreenUtil.convertNumberFromTruncated(menu.data.get(DATA_ENERGY_MSB), menu.data.get(DATA_ENERGY_LSB)));
 
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         RenderSystem.setShaderTexture(0, TEXTURE_LOCATION);
@@ -80,9 +82,11 @@ public class AutoSmithingTableScreen extends AutoScreen<AutoSmithingTableContain
         int minX = this.getGuiLeft() + ENERGY_BAR_ONS_LEFT;
         int minY = this.getGuiTop() + ENERGY_BAR_ONS_TOP;
         if (ScreenUtil.isPointInRect(pX, pY, minX, minX + ENERGY_BAR_WIDTH, minY, minY + ENERGY_BAR_HEIGHT)) {
-            //this.renderComponentTooltip(pPoseStack,
-            //        List.of(Component.translatable("tooltip.autosmithingtable.", )), pX, pY);
-            // TODO: 29.05.23 Implement
+            this.renderComponentTooltip(pPoseStack,
+                    List.of(Component.translatable("tooltip.autosmithingtable.energy_stored",
+                            ScreenUtil.convertNumberFromTruncated(menu.data.get(DATA_ENERGY_MSB), menu.data.get(DATA_ENERGY_LSB)),
+                            ScreenUtil.convertNumberFromTruncated(menu.data.get(DATA_MAX_ENERGY_MSB),
+                                    menu.data.get(DATA_MAX_ENERGY_LSB)))), pX, pY);
         }
     }
 }

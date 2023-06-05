@@ -3,14 +3,15 @@ package org._9636dev.autosmithingtablerewrite.common.blockenttiy;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org._9636dev.autosmithingtablerewrite.common.capability.AutoItemHandler;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public abstract class InventoryBlockEntity extends AutoBlockEntity implements MenuProvider {
+public abstract class InventoryBlockEntity extends AutoBlockEntity implements MenuProvider, Container {
 
     protected final LazyOptional<AutoItemHandler> itemHandler;
 
@@ -32,9 +33,13 @@ public abstract class InventoryBlockEntity extends AutoBlockEntity implements Me
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
 
-        if (cap == ForgeCapabilities.ITEM_HANDLER) return itemHandler.cast();
+        if (cap == ForgeCapabilities.ITEM_HANDLER) return this.getInventoryCap(cap, side);
 
         return LazyOptional.empty();
+    }
+
+    protected <T> LazyOptional<T> getInventoryCap(@NotNull Capability<T> cap, @Nullable Direction side) {
+        return this.itemHandler.cast();
     }
 
     @Override
@@ -63,33 +68,77 @@ public abstract class InventoryBlockEntity extends AutoBlockEntity implements Me
         return drops;
     }
 
-    // autosmithingtable API
-
-    protected final ItemStack getStackInSlot(int slot) {
-        return itemHandler.lazyMap(i -> i.getStackInSlot(slot)).orElseThrow(IllegalStateException::new);
+    @Override
+    public @NotNull ItemStack getItem(int pSlot) {
+        return itemHandler.lazyMap(i -> i.getStackInSlot(pSlot)).orElseThrow(IllegalStateException::new);
     }
 
-    protected final void setStackInSlot(int slot, ItemStack itemStack) {
-        itemHandler.orElseThrow(IllegalStateException::new).setStackInSlot(slot, itemStack);
+    @Override
+    public void setItem(int pSlot, @NotNull ItemStack pStack) {
+        itemHandler.orElseThrow(IllegalStateException::new).setStackInSlot(pSlot, pStack);
     }
 
-    protected final int getInventorySlots() {
-        return itemHandler.lazyMap(ItemStackHandler::getSlots).orElseThrow(IllegalStateException::new);
+    @Override
+    public boolean stillValid(@NotNull Player pPlayer) {
+        assert this.level != null;
+        if (this.level.getBlockEntity(this.worldPosition) != this) {
+            return false;
+        } else {
+            return pPlayer.distanceToSqr((double)this.worldPosition.getX() + 0.5D,
+                    (double)this.worldPosition.getY() + 0.5D,
+                    (double)this.worldPosition.getZ() + 0.5D) <= 64.0D;
+        }
     }
 
+    /**
+     * Inserts item, ignoring the filter
+     * @param slot slot
+     * @param itemStack item
+     * @param simulate simulate
+     * @return ItemStack remaining
+     */
     protected final ItemStack insertItem(int slot, ItemStack itemStack, boolean simulate) {
-        if (!simulate) update(); // Update is deferred until end of tick
-        return itemHandler.lazyMap(i -> i.insertItem(slot, itemStack, simulate)).orElseThrow(IllegalStateException::new);
+        if (!simulate) this.update(); // Update is deferred until end of tick
+        return itemHandler.orElseThrow(IllegalStateException::new).insertItem(slot, itemStack, simulate);
     }
 
     protected final ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if (!simulate) update();
-        return itemHandler.lazyMap(i -> i.extractItem(slot, amount, simulate)).orElseThrow(IllegalStateException::new);
+        if (!simulate) this.update();
+        return itemHandler.orElseThrow(IllegalStateException::new).extractItem(slot, amount, simulate);
     }
 
-    protected final boolean isItemValidInSlot(int slot, ItemStack itemStack) {
-        return itemHandler.lazyMap(i -> i.isItemValid(slot, itemStack)).orElseThrow(IllegalStateException::new);
+    @Override
+    public @NotNull ItemStack removeItem(int pSlot, int pAmount) {
+        return this.extractItem(pSlot, pAmount, false);
+    }
+
+    @Override
+    public @NotNull ItemStack removeItemNoUpdate(int pSlot) {
+        AutoItemHandler handler = itemHandler.orElseThrow(IllegalStateException::new);
+        return handler.extractItem(pSlot, handler.getSlotLimit(pSlot), false);
+    }
+
+    @Override
+    public boolean canPlaceItem(int pIndex, @NotNull ItemStack pStack) {
+        return itemHandler.orElseThrow(IllegalStateException::new).isItemValid(pIndex, pStack);
+
     }
 
     public abstract AutoItemHandler createItemHandler();
+
+    @Override
+    public boolean isEmpty() {
+        for (int i = 0; i < this.getContainerSize(); i++) {
+            if (!this.getItem(i).isEmpty()) return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public void clearContent() {
+        for (int i = 0; i < this.getContainerSize(); i++) {
+            this.setItem(i, ItemStack.EMPTY);
+        }
+    }
 }

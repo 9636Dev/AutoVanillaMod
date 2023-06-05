@@ -11,8 +11,7 @@ import org._9636dev.autosmithingtablerewrite.AutoSmithingTableMod;
 public class AutoRecipes {
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(ForgeRegistries.RECIPE_TYPES, AutoSmithingTableMod.MODID);
 
-    public static final RegistryObject<AutoSmithingRecipeType> AUTO_SMITHING = RECIPE_TYPES.register("auto_smithing",
-            AutoSmithingRecipeType::new);
+    public static final RegistryObject<RecipeType<AutoSmithingRecipe>> AUTO_SMITHING = RECIPE_TYPES.register("auto_smithing", () -> new RecipeType<>() {});
 
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, AutoSmithingTableMod.MODID);
 

@@ -78,7 +78,7 @@ public abstract class AutoBlockEntity extends BlockEntity {
 
     // autosmithingtable API
 
-    public final void update() { // TODO: 2/16/2023 Create update for non-visual / graphical updates
+    public final void update() {
         this.requiresUpdate = true;
     }
 

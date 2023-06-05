@@ -6,11 +6,6 @@ import com.mojang.logging.LogUtils;
 public class ScreenUtil {
     public static int mapNumberToRange(int pMinInput, int pMaxInput, int pMinMapped, int pMaxMapped, int pNumber) {
         if (pMaxInput - pMinInput == 0) return pMaxMapped;
-        if (pMinInput > pMaxInput) {
-            int temp = pMinInput;
-            pMinInput = pMaxInput;
-            pMaxInput = temp;
-        }
 
         if (pNumber < pMinInput || pNumber > pMaxInput) LogUtils.getLogger().debug("Could not map number not in range: {} (range: {} - {})", pNumber, pMinInput, pMaxInput);
 

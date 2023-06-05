@@ -40,9 +40,6 @@ public class AutoSmithingTableContainer extends AutoContainer {
 
     @Override
     protected void moveItemToContainer(ItemStack pStack) {
-        for (Slot slot : this.slots) {
-            if (slot.mayPlace(pStack)) slot.safeInsert(pStack);
-            if (pStack.isEmpty()) break;
-        }
+        moveItemStackTo(pStack, 36, 36 + AutoSmithingTableBlockEntity.SLOT_COUNT, false);
     }
 }

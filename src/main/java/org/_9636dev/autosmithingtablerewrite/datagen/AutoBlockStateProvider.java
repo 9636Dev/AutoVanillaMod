@@ -24,8 +24,11 @@ public class AutoBlockStateProvider extends BlockStateProvider {
                 "block/auto_smithing_table_top");
 
         horizontalBlock(AutoBlocks.AUTO_SMITHING_TABLE.get(),
-                models().cube(AutoBlocks.AUTO_SMITHING_TABLE.getId().getPath(),
+                models()
+                        .cube(AutoBlocks.AUTO_SMITHING_TABLE.getId().getPath(),
                         autoSmithingTableBottom, autoSmithingTableTop, autoSmithingTableFront,
-                        autoSmithingTableSide, autoSmithingTableSide, autoSmithingTableSide));
+                        autoSmithingTableSide, autoSmithingTableSide, autoSmithingTableSide)
+                        .texture("particle", autoSmithingTableFront)
+        );
     }
 }
