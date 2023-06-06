@@ -2,6 +2,6 @@
   "title.autosmithingtable.smithing_table": "Améliorez objets(Auto)",
   "block.autosmithingtable.smithing_table": "Auto table de forge",
   "item.autosmithingtable.smithing_table": "Auto table de forge"
-   "tooltip.autosmithingtable.energy_stored": "%d / %d FE",
+  "tooltip.autosmithingtable.energy_stored": "%d / %d FE",
   "title.autosmithingtable.jei.auto_smithing": "Auto  forgeage"
 }
