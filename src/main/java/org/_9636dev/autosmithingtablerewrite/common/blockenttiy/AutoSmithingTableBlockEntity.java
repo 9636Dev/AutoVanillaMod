@@ -13,9 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.wrapper.SidedInvWrapper;
+import net.minecraftforge.items.ItemHandlerHelper;
 import org._9636dev.autosmithingtablerewrite.common.capability.*;
 import org._9636dev.autosmithingtablerewrite.common.config.AutoCommonConfig;
 import org._9636dev.autosmithingtablerewrite.common.container.AutoSmithingTableContainer;
@@ -25,7 +23,6 @@ import org._9636dev.autosmithingtablerewrite.common.recipe.ISmithingRecipe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 public class AutoSmithingTableBlockEntity extends EnergyBlockEntity implements WorldlyContainer {
@@ -37,23 +34,11 @@ public class AutoSmithingTableBlockEntity extends EnergyBlockEntity implements W
     public static final int DATA_PROGRESS = 4;
     public static final int DATA_MAX_PROGRESS = 5;
 
-
     public static final int DATA_COUNT = 6;
     public static final int SLOT_COUNT = 3;
     private int progress;
     private ISmithingRecipe currentRecipe;
     private final SidedConfig sidedConfig;
-
-    private static final SidedConfig.Side[] availableSides = {
-        SidedConfig.Side.NONE,
-        SidedConfig.Side.INPUT_1,
-        SidedConfig.Side.INPUT_2,
-        SidedConfig.Side.OUTPUT_1,
-        SidedConfig.Side.INPUT_1_OUTPUT_1,
-        SidedConfig.Side.INPUT_2_OUTPUT_1,
-        SidedConfig.Side.INPUT_1_OUTPUT_2,
-        SidedConfig.Side.INPUT_2_OUTPUT_2,
-    };
 
     public AutoSmithingTableBlockEntity(BlockPos pPos, BlockState pState) {
         super(AutoBlockEntities.AUTO_SMITHING_TABLE.get(), pPos, pState);
@@ -61,20 +46,25 @@ public class AutoSmithingTableBlockEntity extends EnergyBlockEntity implements W
         this.progress = 0;
         this.currentRecipe = null;
         this.sidedConfig = new SidedConfig();
+        this.setupSides();
+    }
+
+    private void setupSides() {
         this.sidedConfig.setSide(Direction.UP, SidedConfig.Side.INPUT_1);
         this.sidedConfig.setSide(Direction.NORTH, SidedConfig.Side.INPUT_2_OUTPUT_1);
         this.sidedConfig.setSide(Direction.EAST, SidedConfig.Side.INPUT_2_OUTPUT_1);
         this.sidedConfig.setSide(Direction.SOUTH, SidedConfig.Side.INPUT_2_OUTPUT_1);
-        this.sidedConfig.setSide(Direction.WEST, SidedConfig.Side.INPUT_2_OUTPUT_1);this.sidedConfig.setSide(Direction.NORTH, SidedConfig.Side.INPUT_2_OUTPUT_1);
+        this.sidedConfig.setSide(Direction.WEST, SidedConfig.Side.INPUT_2_OUTPUT_1);
+        this.sidedConfig.setSide(Direction.NORTH, SidedConfig.Side.INPUT_2_OUTPUT_1);
         this.sidedConfig.setSide(Direction.DOWN, SidedConfig.Side.OUTPUT_1);
     }
 
     @Override
     protected void tickServer() {
         // Return early to save resources if inventory is empty, recipe not present, or output is full
-        if (this.itemHandler.map(i -> i.slotsAreEmpty(0, 1))
-                .or(() -> this.itemHandler.map(i -> i.slotIsFull(2))).orElse(false)
-                || this.currentRecipe == null) return;
+        if ((this.getItem(0).isEmpty() && this.getItem(1).isEmpty()) ||
+                this.getItem(2).getCount() == this.getItem(2).getMaxStackSize() ||
+                this.currentRecipe == null) return;
 
         // Extract Energy
         if (this.extractEnergy(this.currentRecipe.getEnergy(), true)
@@ -88,13 +78,16 @@ public class AutoSmithingTableBlockEntity extends EnergyBlockEntity implements W
             CompoundTag tag = this.getItem(0).getTag();
             if (tag != null) result.setTag(tag.copy());
 
-            if (this.insertItem(2, result, true).isEmpty()) { // Can insert item
+            ItemStack itemPresent = getItem(2);
+            if ((itemPresent.isEmpty() || ItemHandlerHelper.canItemStacksStack(itemPresent, result)) &&
+                    itemPresent.getMaxStackSize() - itemPresent.getCount() >= result.getCount()) { // Can insert item
                 this.progress = 0;
                 ItemStack base = this.getItem(0);
                 if (!base.isEmpty()) base.shrink(1);
                 ItemStack addition = this.getItem(1);
                 if (!addition.isEmpty()) addition.shrink(1);
-                this.insertItem(2, result, false);
+                if (itemPresent == ItemStack.EMPTY) this.setItem(2, result);
+                else itemPresent.grow(result.getCount());
 
                 // Recheck recipe, maybe ingredients used up
                 this.updateRecipe();
@@ -139,6 +132,11 @@ public class AutoSmithingTableBlockEntity extends EnergyBlockEntity implements W
         onRecipeChange();
     }
 
+    @Override
+    protected void onInventoryChanged() {
+        this.updateRecipe();
+    }
+
     private void onRecipeChange() {
         // Reset Progress if recipe changes
         this.progress = 0;
@@ -156,27 +154,6 @@ public class AutoSmithingTableBlockEntity extends EnergyBlockEntity implements W
     @Override
     protected AutoEnergyStorage createEnergyStorage() {
         return new AutoEnergyStorage(AutoCommonConfig.getInstance().maxEnergyStored.get());
-    }
-
-    @Override
-    public AutoItemHandler createItemHandler() {
-        return new AutoItemHandler(SLOT_COUNT) {
-            @Override
-            protected void onContentsChanged(int slot) {
-                // Check Recipe
-                AutoSmithingTableBlockEntity.this.updateRecipe();
-            }
-        };
-    }
-
-    @Override
-    protected <T> LazyOptional<T> getInventoryCap(@NotNull Capability<T> cap, @Nullable Direction side) {
-        /*
-        add side config later and rewrite cleaner code,
-        avoid using dual handlers in be (ItemStackHandler and SidedInvWrapper),
-        implement own handler in InventoryBlockEntity with NonNullList
-         */
-        return LazyOptional.of(() -> new SidedInvWrapper(this, side)).cast();
     }
 
     @Override
@@ -233,17 +210,16 @@ public class AutoSmithingTableBlockEntity extends EnergyBlockEntity implements W
         if (pDirection == null) return true;
         return switch (this.sidedConfig.getSide(pDirection)) {
             case NONE,OUTPUT_1,OUTPUT_2 -> false;
-            case INPUT_1,INPUT_1_OUTPUT_1,INPUT_1_OUTPUT_2,INPUT_2,INPUT_2_OUTPUT_1,INPUT_2_OUTPUT_2 ->
-                    canPlaceItem(pIndex, pItemStack);
+            case INPUT_1,INPUT_1_OUTPUT_1,INPUT_1_OUTPUT_2 -> pIndex == 0;
+            case INPUT_2,INPUT_2_OUTPUT_1,INPUT_2_OUTPUT_2 -> pIndex == 1;
         };
     }
 
     @Override
     public boolean canTakeItemThroughFace(int pIndex, @NotNull ItemStack pStack, @NotNull Direction pDirection) {
         return switch (this.sidedConfig.getSide(pDirection)) {
-            case NONE,INPUT_1,INPUT_2 -> false;
-            case OUTPUT_1,INPUT_1_OUTPUT_1,INPUT_2_OUTPUT_1, OUTPUT_2,INPUT_1_OUTPUT_2,INPUT_2_OUTPUT_2 ->
-                    getItem(pIndex).equals(pStack, true);
+            case NONE,INPUT_1,INPUT_2, OUTPUT_2, INPUT_1_OUTPUT_2, INPUT_2_OUTPUT_2 -> false;
+            case OUTPUT_1,INPUT_1_OUTPUT_1,INPUT_2_OUTPUT_1 -> pIndex == 2;
         };
     }
 
@@ -255,7 +231,6 @@ public class AutoSmithingTableBlockEntity extends EnergyBlockEntity implements W
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int pContainerId, @NotNull Inventory pPlayerInventory, @NotNull Player pPlayer) {
-        return new AutoSmithingTableContainer(pContainerId, pPlayerInventory, this.getBlockPos(), this.data,
-                this.itemHandler.orElseThrow(() -> new IllegalStateException("Could not get the ItemHandler of block")));
+        return new AutoSmithingTableContainer(pContainerId, pPlayerInventory, this.getBlockPos(), this.data, this);
     }
 }

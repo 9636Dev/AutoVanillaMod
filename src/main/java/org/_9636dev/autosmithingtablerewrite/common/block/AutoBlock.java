@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org._9636dev.autosmithingtablerewrite.common.blockenttiy.AutoBlockEntity;
-import org._9636dev.autosmithingtablerewrite.common.blockenttiy.InventoryBlockEntity;
+import org._9636dev.autosmithingtablerewrite.common.blockenttiy.SidedInventoryBlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -82,7 +82,7 @@ public abstract class AutoBlock extends Block implements EntityBlock {
     @Override
     public @NotNull InteractionResult use(@NotNull BlockState pState, @NotNull Level pLevel, @NotNull BlockPos pPos,
                                           @NotNull Player pPlayer, @NotNull InteractionHand pHand, @NotNull BlockHitResult pHit) {
-        if (!pLevel.isClientSide && pLevel.getBlockEntity(pPos) instanceof InventoryBlockEntity be) {
+        if (!pLevel.isClientSide && pLevel.getBlockEntity(pPos) instanceof SidedInventoryBlockEntity be) {
             InteractionResult result = this.onUse(pState, pLevel, pPos, pPlayer, pHand, pHit, be);
             if (result != InteractionResult.PASS) return result;
 
@@ -95,7 +95,6 @@ public abstract class AutoBlock extends Block implements EntityBlock {
         return super.use(pState, pLevel, pPos, pPlayer, pHand, pHit);
     }
 
-    // autosmithingtable API
 
 
     @Nullable

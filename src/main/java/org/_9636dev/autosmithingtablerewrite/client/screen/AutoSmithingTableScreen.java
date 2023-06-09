@@ -89,4 +89,9 @@ public class AutoSmithingTableScreen extends AutoScreen<AutoSmithingTableContain
                                     menu.data.get(DATA_MAX_ENERGY_LSB)))), pX, pY);
         }
     }
+
+    @Override
+    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        return super.mouseClicked(pMouseX, pMouseY, pButton);
+    }
 }

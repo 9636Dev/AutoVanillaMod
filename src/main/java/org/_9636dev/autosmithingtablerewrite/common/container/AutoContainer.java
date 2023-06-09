@@ -1,12 +1,12 @@
 package org._9636dev.autosmithingtablerewrite.common.container;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("unused")
@@ -23,12 +23,12 @@ public abstract class AutoContainer extends AbstractContainerMenu {
     protected final ContainerLevelAccess levelAccess;
 
     protected AutoContainer(MenuType<?> pMenuType, int pContainerId, Inventory pPlayerInv, BlockPos pPos,
-                            ContainerData pData, IItemHandler pSlots) {
+                            ContainerData pData, Container pContainer) {
         super(pMenuType, pContainerId);
 
         this.data = pData;
         this.addDataSlots(pData);
-        this.addContainerSlots(pPlayerInv, pSlots);
+        this.addContainerSlots(pPlayerInv, pContainer);
         this.levelAccess = pPlayerInv.player.level.isClientSide() ? ContainerLevelAccess.NULL : ContainerLevelAccess.create(pPlayerInv.player.level, pPos);
     }
 
@@ -74,7 +74,7 @@ public abstract class AutoContainer extends AbstractContainerMenu {
         return returnStack;
     }
 
-    // API
+
 
     /**
      * Adds inventory slots in container
@@ -93,7 +93,7 @@ public abstract class AutoContainer extends AbstractContainerMenu {
         }
     }
 
-    protected abstract void addContainerSlots(Inventory pPlayerInv, IItemHandler pSlots);
+    protected abstract void addContainerSlots(Inventory pPlayerInv, Container pContainer);
     protected abstract Block getBlock();
     protected abstract void moveItemToContainer(ItemStack pStack);
 }

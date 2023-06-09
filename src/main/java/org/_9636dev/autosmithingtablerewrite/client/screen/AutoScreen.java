@@ -23,4 +23,13 @@ public abstract class AutoScreen<T extends AutoContainer> extends AbstractContai
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
         this.renderTooltip(pPoseStack, pMouseX, pMouseY);
     }
+
+    protected void clickInventoryButton(int id) {
+        assert this.minecraft != null;
+        assert this.minecraft.player != null;
+        if (this.menu.clickMenuButton(this.minecraft.player, id)) {
+            assert this.minecraft.gameMode != null;
+            this.minecraft.gameMode.handleInventoryButtonClick((this.menu).containerId, id);
+        }
+    }
 }

@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("unused")
-public abstract class EnergyBlockEntity extends InventoryBlockEntity {
+public abstract class EnergyBlockEntity extends SidedInventoryBlockEntity {
 
     protected final LazyOptional<AutoEnergyStorage> energyHandler;
 
