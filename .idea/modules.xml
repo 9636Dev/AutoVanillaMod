@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/AutoSmithingTableRewrite.iml" filepath="$PROJECT_DIR$/.idea/modules/AutoSmithingTableRewrite.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/AutoSmithingTableRewrite.main.iml" filepath="$PROJECT_DIR$/.idea/modules/AutoSmithingTableRewrite.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/AutoSmithingTableRewrite.test.iml" filepath="$PROJECT_DIR$/.idea/modules/AutoSmithingTableRewrite.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/org._9636dev.AutoSmithingTableRewrite.main.iml" filepath="$PROJECT_DIR$/.idea/modules/org._9636dev.AutoSmithingTableRewrite.main.iml" />
