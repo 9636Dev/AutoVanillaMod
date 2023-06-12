@@ -22,14 +22,14 @@ public class AutoSmithingTableScreen extends AutoScreen<AutoSmithingTableContain
     private static final int PROGRESS_BAR_OFS_LEFT = 177;
     private static final int PROGRESS_BAR_OFS_TOP = 1;
     private static final int ENERGY_BAR_ONS_LEFT = 157;
-    private static final int ENERGY_BAR_ONS_TOP = 8;
-    private static final int ENERGY_BAR_OFS_LEFT = 177;
-    private static final int ENERGY_BAR_OFS_TOP = 45;
+    private static final int ENERGY_BAR_ONS_TOP = 7;
+    private static final int ENERGY_BAR_OFS_LEFT = 176;
+    private static final int ENERGY_BAR_OFS_TOP = 44;
 
     public static final int PROGRESS_BAR_WIDTH = 27;
     public static final int PROGRESS_BAR_HEIGHT = 20;
     private static final int ENERGY_BAR_WIDTH = 9;
-    private static final int ENERGY_BAR_HEIGHT = 72;
+    private static final int ENERGY_BAR_HEIGHT = 71;
     private static final int NO_PROGRESS_OFS_LEFT = 177;
     private static final int NO_PROGRESS_OFS_TOP = 23;
 
