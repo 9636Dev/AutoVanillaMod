@@ -10,12 +10,13 @@ public class SidedConfig implements INBTSerializable<CompoundTag> {
         NONE(0),
         INPUT_1(1),
         INPUT_2(2),
-        OUTPUT_1(3),
-        OUTPUT_2(4),
-        INPUT_1_OUTPUT_1(5),
-        INPUT_2_OUTPUT_1(6),
-        INPUT_1_OUTPUT_2(7),
-        INPUT_2_OUTPUT_2(8);
+        INPUT_3(3),
+        OUTPUT_1(4),
+        OUTPUT_2(5),
+        INPUT_1_OUTPUT_1(6),
+        INPUT_2_OUTPUT_1(7),
+        INPUT_1_OUTPUT_2(8),
+        INPUT_2_OUTPUT_2(9);
 
         private final int id;
         Side(int id) {

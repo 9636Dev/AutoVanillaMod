@@ -7,9 +7,19 @@ import net.minecraft.world.entity.player.Inventory;
 import org._9636dev.autovanilla.common.container.AutoContainer;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Base screen used by AutoVanilla
+ * @param <T> AutoContainer type
+ */
 @SuppressWarnings("unused")
 public abstract class AutoScreen<T extends AutoContainer> extends AbstractContainerScreen<T> {
 
+    /**
+     * Default minecraft screen constructor
+     * @param pMenu container instance
+     * @param pPlayerInventory player inventory
+     * @param pTitle screen title
+     */
     public AutoScreen(T pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
     }
@@ -24,6 +34,10 @@ public abstract class AutoScreen<T extends AutoContainer> extends AbstractContai
         this.renderTooltip(pPoseStack, pMouseX, pMouseY);
     }
 
+    /**
+     * Should be called by the screen to send clicks to the server
+     * @param id button id that was clicked
+     */
     protected void clickInventoryButton(int id) {
         assert this.minecraft != null;
         assert this.minecraft.player != null;

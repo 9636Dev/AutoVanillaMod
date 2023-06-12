@@ -193,7 +193,7 @@ public class AutoSmithingTableBlockEntity extends EnergyBlockEntity implements W
     @Override
     public int @NotNull [] getSlotsForFace(@NotNull Direction pSide) {
         return switch (this.sidedConfig.getSide(pSide)) {
-            case NONE,OUTPUT_2 -> new int[0];
+            case NONE,INPUT_3,OUTPUT_2 -> new int[0];
             case INPUT_1,INPUT_1_OUTPUT_2 -> new int[] {0};
             case INPUT_2,INPUT_2_OUTPUT_2 -> new int[] {1};
             case OUTPUT_1 -> new int[] {2};
@@ -206,7 +206,7 @@ public class AutoSmithingTableBlockEntity extends EnergyBlockEntity implements W
     public boolean canPlaceItemThroughFace(int pIndex, @NotNull ItemStack pItemStack, @Nullable Direction pDirection) {
         if (pDirection == null) return true;
         return switch (this.sidedConfig.getSide(pDirection)) {
-            case NONE,OUTPUT_1,OUTPUT_2 -> false;
+            case NONE,INPUT_3,OUTPUT_1,OUTPUT_2 -> false;
             case INPUT_1,INPUT_1_OUTPUT_1,INPUT_1_OUTPUT_2 -> pIndex == 0;
             case INPUT_2,INPUT_2_OUTPUT_1,INPUT_2_OUTPUT_2 -> pIndex == 1;
         };
@@ -215,7 +215,7 @@ public class AutoSmithingTableBlockEntity extends EnergyBlockEntity implements W
     @Override
     public boolean canTakeItemThroughFace(int pIndex, @NotNull ItemStack pStack, @NotNull Direction pDirection) {
         return switch (this.sidedConfig.getSide(pDirection)) {
-            case NONE,INPUT_1,INPUT_2, OUTPUT_2, INPUT_1_OUTPUT_2, INPUT_2_OUTPUT_2 -> false;
+            case NONE,INPUT_1,INPUT_2,INPUT_3,OUTPUT_2,INPUT_1_OUTPUT_2,INPUT_2_OUTPUT_2 -> false;
             case OUTPUT_1,INPUT_1_OUTPUT_1,INPUT_2_OUTPUT_1 -> pIndex == 2;
         };
     }
