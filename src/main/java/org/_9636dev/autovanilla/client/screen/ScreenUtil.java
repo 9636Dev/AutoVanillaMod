@@ -4,6 +4,15 @@ import com.mojang.logging.LogUtils;
 
 @SuppressWarnings("unused")
 public class ScreenUtil {
+    /**
+     * Maps number from a range of inputs to another range of outputs
+     * @param pMinInput minimum input
+     * @param pMaxInput maximum input
+     * @param pMinMapped minimum output
+     * @param pMaxMapped maximum output
+     * @param pNumber number to map (input)
+     * @return the number mapped (output)
+     */
     public static int mapNumberToRange(int pMinInput, int pMaxInput, int pMinMapped, int pMaxMapped, int pNumber) {
         if (pMaxInput - pMinInput == 0) return pMaxMapped;
 
@@ -12,6 +21,16 @@ public class ScreenUtil {
         return (int)(pNumber / (float)(pMaxInput - pMinInput) * (pMaxMapped - pMinMapped) + pMinMapped);
     }
 
+    /**
+     * Calculates whether a point is in a rectangle or not
+     * @param pX X coordinate
+     * @param pY Y coordinate
+     * @param pMinX minimum X
+     * @param pMaxX maximum X
+     * @param pMinY minimum Y
+     * @param pMaxY maximum y
+     * @return whether the point is in the rectangle
+     */
     public static boolean isPointInRect(int pX, int pY, int pMinX, int pMaxX, int pMinY, int pMaxY) {
         return (pMinX <= pX && pX <= pMaxX) && (pMinY <= pY && pY <= pMaxY);
     }

@@ -23,9 +23,6 @@ import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @SuppressWarnings("unused")
 public abstract class SidedInventoryBlockEntity extends AutoBlockEntity implements MenuProvider, Container, WorldlyContainer {
 
@@ -64,13 +61,6 @@ public abstract class SidedInventoryBlockEntity extends AutoBlockEntity implemen
     protected void saveAdditional(@NotNull CompoundTag pTag) {
         ContainerHelper.loadAllItems(pTag, this.items);
     }
-
-
-    @Override
-    public @NotNull List<ItemStack> getDrops() {
-        return new ArrayList<>(this.items);
-    }
-
     @Override
     public @NotNull ItemStack getItem(int pSlot) {
         return items.get(pSlot);

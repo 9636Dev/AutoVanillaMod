@@ -2,6 +2,8 @@ package org._9636dev.autovanilla.client.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.narration.NarratedElementType;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -48,13 +50,36 @@ public class AutoSmithingTableScreen extends AutoScreen<AutoSmithingTableContain
         int i = this.getGuiLeft();
         int j = this.getGuiTop();
 
+        /*
+            Creates a ProgressBar, and provides it with information about the energy, and max energy of the block
+            The UpdateNarration and NarrationPriority functions are overridden to allow narrations of the energy
+         */
         this.addRenderableWidget(new ProgressBar(i + ENERGY_BAR_ONS_LEFT, j + ENERGY_BAR_ONS_TOP,
                 ENERGY_BAR_WIDTH, 0, ENERGY_BAR_WIDTH, ENERGY_BAR_HEIGHT, () -> 0, () -> 0,
                 () -> 0, () -> ScreenUtil.convertNumberFromTruncated(menu.data.get(DATA_MAX_ENERGY_MSB),
                     menu.data.get(DATA_MAX_ENERGY_LSB)), ProgressBar.ProgressDirection.BOTTOM_TO_TOP,
                 new Texture(TEXTURE_LOCATION, ENERGY_BAR_OFS_LEFT, ENERGY_BAR_OFS_TOP),
-                () -> ScreenUtil.convertNumberFromTruncated(menu.data.get(DATA_ENERGY_MSB), menu.data.get(DATA_ENERGY_LSB))));
+                () -> ScreenUtil.convertNumberFromTruncated(menu.data.get(DATA_ENERGY_MSB), menu.data.get(DATA_ENERGY_LSB))) {
 
+            @Override
+            public @NotNull NarrationPriority narrationPriority() {
+                return NarrationPriority.HOVERED;
+            }
+
+            @Override
+            public void updateNarration(@NotNull NarrationElementOutput pNarrationElementOutput) {
+                pNarrationElementOutput.add(NarratedElementType.HINT,
+                        Component.translatable("narration.autovanilla.energy_bar",
+                                ScreenUtil.convertNumberFromTruncated(menu.data.get(DATA_ENERGY_MSB), menu.data.get(DATA_ENERGY_LSB)),
+                                ScreenUtil.convertNumberFromTruncated(menu.data.get(DATA_MAX_ENERGY_MSB),
+                                        menu.data.get(DATA_MAX_ENERGY_LSB))));
+            }
+        });
+
+        /*
+         * Creates a progress bar, render an arrow with an X for alternate,
+         * as the only reason for alternate render is if no recipe is present
+         */
         this.addRenderableWidget(new ProgressBar(i + PROGRESS_BAR_ONS_LEFT, j + PROGRESS_BAR_ONS_TOP,
                 0, PROGRESS_BAR_HEIGHT, PROGRESS_BAR_WIDTH, PROGRESS_BAR_HEIGHT, () -> 0,
                 () -> this.menu.data.get(DATA_MAX_PROGRESS), () -> 0, () -> 0, ProgressBar.ProgressDirection.LEFT_TO_RIGHT,
@@ -74,6 +99,7 @@ public class AutoSmithingTableScreen extends AutoScreen<AutoSmithingTableContain
         int i = this.getGuiLeft();
         int j = this.getGuiTop();
 
+        // Blit the background GUI
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         RenderSystem.setShaderTexture(0, TEXTURE_LOCATION);
         this.blit(pPoseStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
@@ -86,6 +112,7 @@ public class AutoSmithingTableScreen extends AutoScreen<AutoSmithingTableContain
         int minX = this.getGuiLeft() + ENERGY_BAR_ONS_LEFT;
         int minY = this.getGuiTop() + ENERGY_BAR_ONS_TOP;
         if (ScreenUtil.isPointInRect(pX, pY, minX, minX + ENERGY_BAR_WIDTH, minY, minY + ENERGY_BAR_HEIGHT)) {
+            // Mouse hover point is in rect of energy bar, display number tooltip
             this.renderComponentTooltip(pPoseStack,
                     List.of(Component.translatable("tooltip.autovanilla.energy_stored",
                             ScreenUtil.convertNumberFromTruncated(menu.data.get(DATA_ENERGY_MSB), menu.data.get(DATA_ENERGY_LSB)),
@@ -98,4 +125,5 @@ public class AutoSmithingTableScreen extends AutoScreen<AutoSmithingTableContain
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
         return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
+
 }

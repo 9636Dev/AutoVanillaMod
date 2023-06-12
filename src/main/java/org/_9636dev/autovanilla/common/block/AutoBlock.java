@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -33,8 +34,9 @@ public abstract class AutoBlock extends Block implements EntityBlock {
     @Deprecated
     @Override
     public void onRemove(@NotNull BlockState pState, @NotNull Level pLevel, @NotNull BlockPos pPos, @NotNull BlockState pNewState, boolean pIsMoving) {
-        if (pLevel.getBlockEntity(pPos) instanceof AutoBlockEntity be) {
-            for (ItemStack item : be.getDrops()) Containers.dropItemStack(pLevel, pPos.getX(), pPos.getY(), pPos.getZ(), item);
+        if (pLevel.getBlockEntity(pPos) instanceof SidedInventoryBlockEntity be) {
+            // Drop inventory items
+            Containers.dropContents(pLevel, pPos, be);
         }
         super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
     }
@@ -80,14 +82,16 @@ public abstract class AutoBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public @NotNull InteractionResult use(@NotNull BlockState pState, @NotNull Level pLevel, @NotNull BlockPos pPos,
+    public final @NotNull InteractionResult use(@NotNull BlockState pState, @NotNull Level pLevel, @NotNull BlockPos pPos,
                                           @NotNull Player pPlayer, @NotNull InteractionHand pHand, @NotNull BlockHitResult pHit) {
-        if (!pLevel.isClientSide && pLevel.getBlockEntity(pPos) instanceof SidedInventoryBlockEntity be) {
+        if (pLevel.isClientSide) return super.use(pState, pLevel, pPos, pPlayer, pHand, pHit);
+
+        if (pLevel.getBlockEntity(pPos) instanceof AutoBlockEntity be) {
             InteractionResult result = this.onUse(pState, pLevel, pPos, pPlayer, pHand, pHit, be);
             if (result != InteractionResult.PASS) return result;
 
-            if (this.hasContainer()) {
-                pPlayer.openMenu(be);
+            if (this.hasContainer() && be instanceof SidedInventoryBlockEntity) {
+                pPlayer.openMenu((MenuProvider) be);
                 return InteractionResult.SUCCESS;
             }
         }
@@ -101,6 +105,9 @@ public abstract class AutoBlock extends Block implements EntityBlock {
     @Override
     public abstract BlockEntity newBlockEntity(@NotNull BlockPos pPos, @NotNull BlockState pState);
 
+    /**
+     * On use function wrapper for the Block, as the 'use' function is used internally and is final
+     */
     @SuppressWarnings("unused")
     protected InteractionResult onUse(@NotNull BlockState pState, @NotNull Level pLevel, @NotNull BlockPos pPos,
                                       @NotNull Player pPlayer, @NotNull InteractionHand pHand, @NotNull BlockHitResult pHit, AutoBlockEntity pBlockEntity)

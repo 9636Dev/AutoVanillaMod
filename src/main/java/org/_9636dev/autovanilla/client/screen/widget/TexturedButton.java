@@ -6,12 +6,21 @@ import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import org._9636dev.autovanilla.client.screen.ScreenUtil;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Textured button, acts like a Vanilla Button Widget, but is a custom texture
+ */
 @SuppressWarnings("unused")
 public class TexturedButton extends GuiComponent implements Widget, GuiEventListener, NarratableEntry {
 
     public interface OnClick {
+        /**
+         * Called when button is clicked
+         * @param button TextureButton instance
+         * @param mouseButton mouse button that was clicked
+         */
         void onClick(TexturedButton button, int mouseButton);
     }
 
@@ -20,6 +29,14 @@ public class TexturedButton extends GuiComponent implements Widget, GuiEventList
     private final OnClick onClick;
     private boolean visible;
 
+    /**
+     * @param posX Left x coordinate for button
+     * @param posY Top y coordinate for button
+     * @param width width in pixels
+     * @param height height in pixels
+     * @param texture texture instance for button texture
+     * @param onClick interface called when clicked
+     */
     public TexturedButton(int posX, int posY, int width, int height, Texture texture, OnClick onClick) {
         this.texture = texture;
         this.posX = posX;
@@ -31,13 +48,17 @@ public class TexturedButton extends GuiComponent implements Widget, GuiEventList
         this.visible = true;
     }
 
+    /**
+     * Changes the visibility of the button
+     * @param visible whether the button will be rendered
+     */
     public void setVisible(boolean visible) {
         this.visible = visible;
     }
 
     @Override
     public void render(@NotNull PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        if (!visible) return;
+        if (!visible) return; // Only render if button is visible
 
         this.texture.load();
         this.blit(pPoseStack, this.posX, this.posY, this.texture.x(), this.texture.y(), this.width, this.height);
@@ -45,9 +66,10 @@ public class TexturedButton extends GuiComponent implements Widget, GuiEventList
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if (!visible) return false;
+        if (!visible) return false; // Don't detect mouse clicks if not visible
 
-        if (pMouseX >= this.posX && pMouseX <= this.posX + this.width && pMouseY > this.posY && pMouseY > this.posY + this.height) {
+        if (ScreenUtil.isPointInRect((int) pMouseX, (int) pMouseY, this.posX, this.posX + this.width,
+                this.posY,this.posY + this.height)) {
             this.onClick.onClick(this, pButton);
             return true;
         }

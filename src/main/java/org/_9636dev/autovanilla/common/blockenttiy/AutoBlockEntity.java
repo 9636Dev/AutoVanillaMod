@@ -7,7 +7,6 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -16,7 +15,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Objects;
 
 public abstract class AutoBlockEntity extends BlockEntity {
@@ -55,6 +53,10 @@ public abstract class AutoBlockEntity extends BlockEntity {
         }
     }
 
+    /**
+     * Internal tick method called by AutoBlock, should not be overridden by the user in a BlockEntity implementation.
+     * Instead, use 'tickServer'.
+     */
     public void internalTick() {
         if (level == null || level.isClientSide()) return;
 
@@ -76,8 +78,6 @@ public abstract class AutoBlockEntity extends BlockEntity {
         this.update();
     }
 
-    // autosmithingtable API
-
     public final void update() {
         this.requiresUpdate = true;
     }
@@ -97,7 +97,4 @@ public abstract class AutoBlockEntity extends BlockEntity {
     protected abstract void saveAdditional(@NotNull CompoundTag pTag);
 
     protected abstract void tickServer();
-
-    @NotNull
-    public abstract List<ItemStack> getDrops();
 }
