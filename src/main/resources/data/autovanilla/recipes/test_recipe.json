@@ -1,0 +1,12 @@
+{
+  "type": "autovanilla:auto_smithing",
+  "base": {
+    "item": "minecraft:stick"
+  },
+  "addition": {
+    "item": "minecraft:iron_ingot"
+  },
+  "result": "minecraft:iron_pickaxe",
+  "ticks": 15,
+  "energy": 5
+}

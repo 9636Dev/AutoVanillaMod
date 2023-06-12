@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "org._9636dev.autovanilla.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "AutoVanilla.refmap.json",
+  "mixins": [
+    "UpgradeRecipeMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
