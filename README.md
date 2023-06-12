@@ -1,4 +1,4 @@
-~~# AutoVanilla
+# AutoVanilla
 
 ## What is AutoVanilla?
 
@@ -9,11 +9,9 @@ All of these require Forge Energy to run, which can be generated through other m
 
 ## What Happened to AutoSmithingTable?
 
-AutoVanilla is rewrite of AutoSmithingTable, but also includes the additional features described previously.
-AutoVanilla is a replacement for AutoSmithingTable, with better sided inputs, user interface, and aims to provide better 
-user experience.
-
-
+AutoVanilla is a rewrite of AutoSmithingTable, but also includes the additional features described previously.
+AutoVanilla replaces AutoSmithingTable, with better sided inputs, user interface, and aims to provide better 
+overall user experience.
 
 ## Credits
 

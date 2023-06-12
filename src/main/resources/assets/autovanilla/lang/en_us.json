@@ -1,7 +1,7 @@
 {
-  "title.autosmithingtable.smithing_table": "Upgrade Items (Auto)",
-  "block.autosmithingtable.smithing_table": "Auto Smithing Table",
-  "item.autosmithingtable.smithing_table": "Auto Smithing Table",
-  "tooltip.autosmithingtable.energy_stored": "%d / %d FE",
-  "title.autosmithingtable.jei.auto_smithing": "Auto Smithing"
+  "title.autovanilla.smithing_table": "Upgrade Items (Auto)",
+  "block.autovanilla.smithing_table": "Auto Smithing Table",
+  "item.autovanilla.smithing_table": "Auto Smithing Table",
+  "tooltip.autovanilla.energy_stored": "%d / %d FE",
+  "title.autovanilla.jei.auto_smithing": "Auto Smithing"
 }

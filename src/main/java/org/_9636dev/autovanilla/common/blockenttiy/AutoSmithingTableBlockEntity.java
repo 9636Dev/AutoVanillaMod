@@ -19,7 +19,6 @@ import org._9636dev.autovanilla.common.config.AutoCommonConfig;
 import org._9636dev.autovanilla.common.container.AutoSmithingTableContainer;
 import org._9636dev.autovanilla.common.recipe.AutoRecipes;
 import org._9636dev.autovanilla.common.recipe.AutoSmithingRecipe;
-import org._9636dev.autovanilla.common.recipe.ISmithingRecipe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,7 +35,7 @@ public class AutoSmithingTableBlockEntity extends EnergyBlockEntity implements W
     public static final int DATA_COUNT = 6;
     public static final int SLOT_COUNT = 3;
     private int progress;
-    private ISmithingRecipe currentRecipe;
+    private AutoSmithingRecipe currentRecipe;
     private final SidedConfig sidedConfig;
 
     public AutoSmithingTableBlockEntity(BlockPos pPos, BlockState pState) {
@@ -66,13 +65,13 @@ public class AutoSmithingTableBlockEntity extends EnergyBlockEntity implements W
                 this.currentRecipe == null) return;
 
         // Extract Energy
-        if (this.extractEnergy(this.currentRecipe.getEnergy(), true)
-                != this.currentRecipe.getEnergy()) { // Not enough energy
+        if (this.extractEnergy(this.currentRecipe.energyPerTick, true)
+                != this.currentRecipe.energyPerTick) { // Not enough energy
             this.progress = Math.min(0, this.progress - 1); // Slowly decrease progress
         }
-        else this.extractEnergy(this.currentRecipe.getEnergy(), false);
+        else this.extractEnergy(this.currentRecipe.energyPerTick, false);
 
-        if (this.progress >= this.currentRecipe.getTicks()) { // Recipe should craft
+        if (this.progress >= this.currentRecipe.energyPerTick) { // Recipe should craft
             ItemStack result = this.currentRecipe.getResultItem().copy();
             CompoundTag tag = this.getItem(0).getTag();
             if (tag != null) result.setTag(tag.copy());
@@ -121,7 +120,7 @@ public class AutoSmithingTableBlockEntity extends EnergyBlockEntity implements W
     }
 
     private void updateRecipe() {
-        Optional<ISmithingRecipe> recipe = getCurrentRecipe();
+        Optional<AutoSmithingRecipe> recipe = getCurrentRecipe();
         if (recipe.isPresent()) {
             // Same Recipe, return early to avoid calling onRecipeChange
             if (recipe.get().equals(this.currentRecipe)) return;
@@ -141,13 +140,12 @@ public class AutoSmithingTableBlockEntity extends EnergyBlockEntity implements W
         this.progress = 0;
     }
 
-    private Optional<ISmithingRecipe> getCurrentRecipe() {
+    private Optional<AutoSmithingRecipe> getCurrentRecipe() {
         assert level != null;
         RecipeManager recipeManager = level.getRecipeManager();
-        Optional<AutoSmithingRecipe> autoSmithingRecipe = recipeManager.getRecipeFor(AutoRecipes.AUTO_SMITHING.get(),
-                this, level);
-        if (autoSmithingRecipe.isPresent()) return autoSmithingRecipe.map(a -> a); // Implicit cast to ISmithingRecipe
-        return recipeManager.getRecipeFor(RecipeType.SMITHING, this, level).map(a -> (ISmithingRecipe) a);
+        return recipeManager.getRecipeFor(AutoRecipes.AUTO_SMITHING.get(),
+                this, level).or(() -> recipeManager.getRecipeFor(RecipeType.SMITHING,
+                this, level).map(AutoSmithingRecipe::fromVanilla));
     }
 
     @Override
@@ -157,7 +155,7 @@ public class AutoSmithingTableBlockEntity extends EnergyBlockEntity implements W
 
     @Override
     public @NotNull Component getDisplayName() {
-        return Component.translatable("title.autosmithingtable.smithing_table");
+        return Component.translatable("title.autovanilla.smithing_table");
     }
 
     @Override
@@ -171,7 +169,7 @@ public class AutoSmithingTableBlockEntity extends EnergyBlockEntity implements W
                     case 2 -> AutoEnergyStorage.getMSB(getMaxEnergyStored());
                     case 3 -> AutoEnergyStorage.getLSB(getMaxEnergyStored());
                     case 4 -> progress;
-                    case 5 -> currentRecipe == null ? -1 : currentRecipe.getTicks();
+                    case 5 -> currentRecipe == null ? -1 : currentRecipe.ticksRequired;
                     default -> throw new IllegalArgumentException("Invalid argument for AutoSmithingTable container data: " + pIndex);
                 };
             }

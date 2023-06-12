@@ -6,14 +6,15 @@ import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
+import org._9636dev.autovanilla.common.config.AutoCommonConfig;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public class AutoSmithingRecipe implements Recipe<Container>,ISmithingRecipe {
+public class AutoSmithingRecipe implements Recipe<Container> {
     private final ResourceLocation recipeId;
-    final Ingredient base, addition;
-    final ItemStack result;
+    public final Ingredient base, addition;
+    public final ItemStack result;
     public final int ticksRequired, energyPerTick;
 
     public AutoSmithingRecipe(ResourceLocation recipeId, Ingredient baseItem, Ingredient additionItem, ItemStack outputItem,
@@ -69,16 +70,6 @@ public class AutoSmithingRecipe implements Recipe<Container>,ISmithingRecipe {
     }
 
     @Override
-    public Ingredient getBase() {
-        return base;
-    }
-
-    @Override
-    public Ingredient getAddition() {
-        return addition;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof AutoSmithingRecipe that)) return false;
@@ -88,5 +79,11 @@ public class AutoSmithingRecipe implements Recipe<Container>,ISmithingRecipe {
     @Override
     public int hashCode() {
         return Objects.hash(recipeId, base, addition, result, ticksRequired, energyPerTick);
+    }
+
+    public static AutoSmithingRecipe fromVanilla(UpgradeRecipe pUpgradeRecipe) {
+        return new AutoSmithingRecipe(pUpgradeRecipe.getId(), pUpgradeRecipe.base, pUpgradeRecipe.addition,
+                pUpgradeRecipe.getResultItem(), AutoCommonConfig.getInstance().defaultSmithingTimeInTicks.get(),
+                AutoCommonConfig.getInstance().defaultSmithingEnergyPerTick.get());
     }
 }

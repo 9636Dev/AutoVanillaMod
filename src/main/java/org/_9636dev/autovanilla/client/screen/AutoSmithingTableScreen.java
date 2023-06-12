@@ -87,7 +87,7 @@ public class AutoSmithingTableScreen extends AutoScreen<AutoSmithingTableContain
         int minY = this.getGuiTop() + ENERGY_BAR_ONS_TOP;
         if (ScreenUtil.isPointInRect(pX, pY, minX, minX + ENERGY_BAR_WIDTH, minY, minY + ENERGY_BAR_HEIGHT)) {
             this.renderComponentTooltip(pPoseStack,
-                    List.of(Component.translatable("tooltip.autosmithingtable.energy_stored",
+                    List.of(Component.translatable("tooltip.autovanilla.energy_stored",
                             ScreenUtil.convertNumberFromTruncated(menu.data.get(DATA_ENERGY_MSB), menu.data.get(DATA_ENERGY_LSB)),
                             ScreenUtil.convertNumberFromTruncated(menu.data.get(DATA_MAX_ENERGY_MSB),
                                     menu.data.get(DATA_MAX_ENERGY_LSB)))), pX, pY);
