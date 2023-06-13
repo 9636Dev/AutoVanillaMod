@@ -4,15 +4,19 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org._9636dev.autovanilla.AutoVanilla;
 import org._9636dev.autovanilla.client.screen.widget.ProgressBar;
+import org._9636dev.autovanilla.client.screen.widget.SideConfigMenu;
 import org._9636dev.autovanilla.client.screen.widget.Texture;
+import org._9636dev.autovanilla.common.capability.SidedConfig;
 import org._9636dev.autovanilla.common.container.AutoSmithingTableContainer;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.List;
 
 import static org._9636dev.autovanilla.common.blockenttiy.AutoSmithingTableBlockEntity.*;
@@ -35,12 +39,47 @@ public class AutoSmithingTableScreen extends AutoScreen<AutoSmithingTableContain
     private static final int NO_PROGRESS_OFS_LEFT = 177;
     private static final int NO_PROGRESS_OFS_TOP = 23;
 
+    private static final int SIDE_CONFIG_OFS_LEFT = 6;
+    private static final int SIDE_CONFIG_OFS_TOP = 9;
+    private static final int SIDE_CONFIG_WIDTH = 71;
+    private static final int SIDE_CONFIG_HEIGHT = 71;
+    private static final int SIDE_CONFIG_ONS_LEFT = -SIDE_CONFIG_WIDTH - 10;
+    private static final int SIDE_CONFIG_ONS_TOP = 20;
 
     public static final ResourceLocation TEXTURE_LOCATION =
             new ResourceLocation(AutoVanilla.MODID, "textures/gui/auto_smithing_table.png");
+    // Directions are Up, Left, Front, Right, Down, Back
+    private static final List<SideConfigMenu.TextureSide> TEXTURE_SIDES = List.of(
+            new SideConfigMenu.TextureSide(33, 18, 17, 17),
+            new SideConfigMenu.TextureSide(15, 36, 17, 17),
+            new SideConfigMenu.TextureSide(33, 36, 17, 17),
+            new SideConfigMenu.TextureSide(51, 36, 17, 17),
+            new SideConfigMenu.TextureSide(33, 54, 17, 17),
+            new SideConfigMenu.TextureSide(51, 54, 17, 17)
+    );
+    private static final List<SidedConfig.Side> AVAILABLE_SIDES = List.of(
+            SidedConfig.Side.NONE, SidedConfig.Side.INPUT_1, SidedConfig.Side.INPUT_2,
+            SidedConfig.Side.INPUT_3, SidedConfig.Side.OUTPUT_1
+    );
+
+    private static final HashMap<SidedConfig.Side, SideConfigMenu.TextureSide> OFFSCREEN_SIDES;
+    static {
+        OFFSCREEN_SIDES = new HashMap<>();
+        OFFSCREEN_SIDES.put(SidedConfig.Side.INPUT_1, new SideConfigMenu.TextureSide(79, 41, 17, 17));
+        OFFSCREEN_SIDES.put(SidedConfig.Side.INPUT_2, new SideConfigMenu.TextureSide(98, 41, 17, 17));
+        OFFSCREEN_SIDES.put(SidedConfig.Side.INPUT_3, new SideConfigMenu.TextureSide(79, 60, 17, 17));
+        OFFSCREEN_SIDES.put(SidedConfig.Side.OUTPUT_1, new SideConfigMenu.TextureSide(98, 60, 17, 17));
+    }
+
+    private final SideConfigMenu sideConfigMenu;
 
     public AutoSmithingTableScreen(AutoSmithingTableContainer pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
+
+        // TODO: 6/13/2023 Get sided config from server
+        this.sideConfigMenu = new SideConfigMenu(SIDE_CONFIG_ONS_LEFT, SIDE_CONFIG_ONS_TOP, SIDE_CONFIG_WIDTH, SIDE_CONFIG_HEIGHT,
+                new Texture(WIDGETS, SIDE_CONFIG_OFS_LEFT, SIDE_CONFIG_OFS_TOP), TEXTURE_SIDES, OFFSCREEN_SIDES,
+                new SidedConfig(), AVAILABLE_SIDES,Direction.from2DDataValue(this.menu.data.get(DATA_DIRECTION)));
     }
 
     @Override

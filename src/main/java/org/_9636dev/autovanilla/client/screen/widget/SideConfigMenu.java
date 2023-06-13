@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("unused")
-public abstract class SideConfigMenu extends GuiComponent implements Widget, GuiEventListener, NarratableEntry {
+public class SideConfigMenu extends GuiComponent implements Widget, GuiEventListener, NarratableEntry {
     public record TextureSide(int x, int y, int width, int height) {
         public int minX() {
             return x;
@@ -37,14 +37,16 @@ public abstract class SideConfigMenu extends GuiComponent implements Widget, Gui
 
     private final Texture texture;
     private final int xPos, yPos, width, height;
-    private final Map<Direction, TextureSide> textureSides;
+    private final List<TextureSide> textureSides;
     private final Map<SidedConfig.Side, TextureSide> offscreenSides;
     private final List<SidedConfig.Side> availableSides;
+    private final Direction front;
 
     private final SidedConfig sidedConfig;
 
-    public SideConfigMenu(int pX, int pY, int pWidth, int pHeight, Texture texture, Map<Direction, TextureSide> textureSides,
-                          Map<SidedConfig.Side, TextureSide> offscreenSides, SidedConfig sidedConfig, List<SidedConfig.Side> availableSides) {
+    public SideConfigMenu(int pX, int pY, int pWidth, int pHeight, Texture texture, List<TextureSide> textureSides,
+                          Map<SidedConfig.Side, TextureSide> offscreenSides, SidedConfig sidedConfig,
+                          List<SidedConfig.Side> availableSides, Direction front) {
         this.xPos = pX;
         this.yPos = pY;
         this.width = pWidth;
@@ -54,11 +56,9 @@ public abstract class SideConfigMenu extends GuiComponent implements Widget, Gui
         this.offscreenSides = offscreenSides;
         this.sidedConfig = sidedConfig;
         this.availableSides = availableSides;
+        this.front = front;
     }
 
-    public SidedConfig getSidedConfig() {
-        return sidedConfig;
-    }
 
     @Override
     public @NotNull NarrationPriority narrationPriority() {
@@ -72,6 +72,9 @@ public abstract class SideConfigMenu extends GuiComponent implements Widget, Gui
 
     @Override
     public void render(@NotNull PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+        this.texture.load();
+        this.blit(pPoseStack, this.xPos, this.yPos, this.width, this.height, this.texture.x(), this.texture.y());
+
         // TODO: 6/12/2023 Render background and render texture in each slot
     }
 
@@ -82,10 +85,10 @@ public abstract class SideConfigMenu extends GuiComponent implements Widget, Gui
         boolean isShifted = Minecraft.getInstance().player.isShiftKeyDown();
 
         TextureSide ts;
-        for (Map.Entry<Direction, TextureSide> side : this.textureSides.entrySet()) {
-            ts = side.getValue();
+        for (int i = 0; i < 6;i++) {
+            ts = this.textureSides.get(i);
             if (ScreenUtil.isPointInRect((int) pMouseX, (int) pMouseY, ts.minX(), ts.maxX(), ts.minY(), ts.maxY())) {
-                if (isShifted) this.sidedConfig.setSide(side.getKey(), SidedConfig.Side.NONE);
+                if (isShifted) this.sidedConfig.setSide(this.getRelativeSide(i), SidedConfig.Side.NONE);
                 else if (pButton == 1) System.out.println(); // TODO: 6/12/2023 Increase by 1 or shift
                 else System.out.println(); // TODO: 6/12/2023 Decrease by 1 or shift
                 return true;
@@ -93,5 +96,17 @@ public abstract class SideConfigMenu extends GuiComponent implements Widget, Gui
         }
 
         return false;
+    }
+
+    private Direction getRelativeSide(int i) {
+        return switch (i) {
+            case 0 -> Direction.UP;
+            case 1 -> this.front.getClockWise();
+            case 2 -> this.front;
+            case 3 -> this.front.getCounterClockWise();
+            case 4 -> Direction.DOWN;
+            case 5 -> this.front.getOpposite();
+            default -> throw new IllegalArgumentException("Relative side number should be in range 0-5");
+        }
     }
 }

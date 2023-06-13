@@ -89,4 +89,6 @@ public class SidedConfig implements INBTSerializable<CompoundTag> {
     public void deserializeNBT(CompoundTag nbt) {
         this.sidesConfig = nbt.getLong("sides");
     }
+
+    // TODO: 6/13/2023 Separate into 4
 }

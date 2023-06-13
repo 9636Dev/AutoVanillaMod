@@ -3,6 +3,7 @@ package org._9636dev.autovanilla.client.screen;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org._9636dev.autovanilla.common.container.AutoContainer;
 import org.jetbrains.annotations.NotNull;
@@ -13,6 +14,8 @@ import org.jetbrains.annotations.NotNull;
  */
 @SuppressWarnings("unused")
 public abstract class AutoScreen<T extends AutoContainer> extends AbstractContainerScreen<T> {
+
+    public static final ResourceLocation WIDGETS = new ResourceLocation("textures/gui/widgets.png");
 
     /**
      * Default minecraft screen constructor

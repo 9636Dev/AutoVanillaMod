@@ -24,6 +24,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
+import static org._9636dev.autovanilla.common.block.AutoBlock.HORIZONTAL_FACING;
+
 public class AutoSmithingTableBlockEntity extends EnergyBlockEntity implements WorldlyContainer {
 
     public static final int DATA_ENERGY_MSB = 0;
@@ -32,7 +34,8 @@ public class AutoSmithingTableBlockEntity extends EnergyBlockEntity implements W
     public static final int DATA_MAX_ENERGY_LSB = 3;
     public static final int DATA_PROGRESS = 4;
     public static final int DATA_MAX_PROGRESS = 5;
-    public static final int DATA_COUNT = 6;
+    public static final int DATA_DIRECTION = 6;
+    public static final int DATA_COUNT = 7;
     public static final int SLOT_COUNT = 3;
     private int progress;
     private AutoSmithingRecipe currentRecipe;
@@ -170,6 +173,7 @@ public class AutoSmithingTableBlockEntity extends EnergyBlockEntity implements W
                     case 3 -> AutoEnergyStorage.getLSB(getMaxEnergyStored());
                     case 4 -> progress;
                     case 5 -> currentRecipe == null ? -1 : currentRecipe.ticksRequired;
+                    case 6 -> getBlockState().getValue(HORIZONTAL_FACING).get2DDataValue();
                     default -> throw new IllegalArgumentException("Invalid argument for AutoSmithingTable container data: " + pIndex);
                 };
             }
@@ -177,7 +181,7 @@ public class AutoSmithingTableBlockEntity extends EnergyBlockEntity implements W
             @Override
             public void set(int pIndex, int pValue) {
                 switch (pIndex) {
-                    case 0,1,2,3,5 -> {}
+                    case 0,1,2,3,5,6 -> {}
                     case 4 -> progress = pValue;
                     default -> throw new IllegalArgumentException("Invalid argument for AutoSmithingTable container data: " + pIndex);
                 }
