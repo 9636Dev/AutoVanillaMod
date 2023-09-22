@@ -2,6 +2,7 @@ package org._9636dev.autovanilla.integration.jei;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
@@ -31,7 +32,6 @@ public class AutoJEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(@NotNull IRecipeCatalystRegistration registration) {
-       registration.addRecipeCatalyst(new ItemStack(AutoItems.AUTO_SMITHING_TABLE.get()), AutoSmithingRecipeCategory.recipeType);
+       registration.addRecipeCatalyst(new ItemStack(AutoItems.AUTO_SMITHING_TABLE.get()), AutoSmithingRecipeCategory.recipeType, RecipeTypes.SMITHING);
     }
-
 }

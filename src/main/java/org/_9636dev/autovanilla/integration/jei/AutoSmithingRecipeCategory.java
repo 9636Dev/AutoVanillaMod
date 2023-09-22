@@ -27,7 +27,7 @@ public class AutoSmithingRecipeCategory implements IRecipeCategory<AutoSmithingR
 
     @Override
     public @NotNull Component getTitle() {
-        return Component.translatable("title.autosmithingtable.jei.auto_smithing");
+        return Component.translatable("title.autovanilla.jei.auto_smithing");
     }
 
     @Override
@@ -42,6 +42,6 @@ public class AutoSmithingRecipeCategory implements IRecipeCategory<AutoSmithingR
 
     @Override
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, @NotNull AutoSmithingRecipe recipe, @NotNull IFocusGroup focuses) {
-
     }
+
 }

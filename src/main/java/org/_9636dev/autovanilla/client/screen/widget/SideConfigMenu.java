@@ -107,6 +107,6 @@ public class SideConfigMenu extends GuiComponent implements Widget, GuiEventList
             case 4 -> Direction.DOWN;
             case 5 -> this.front.getOpposite();
             default -> throw new IllegalArgumentException("Relative side number should be in range 0-5");
-        }
+        };
     }
 }
