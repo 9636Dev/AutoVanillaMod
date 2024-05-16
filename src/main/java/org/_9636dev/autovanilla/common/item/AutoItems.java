@@ -14,5 +14,5 @@ public class AutoItems {
             DeferredRegister.create(ForgeRegistries.ITEMS, AutoVanilla.MODID);
 
     public static final RegistryObject<BlockItem> AUTO_SMITHING_TABLE = ITEMS.register("smithing_table",
-            () -> new BlockItem(AutoBlocks.AUTO_SMITHING_TABLE.get(), new Item.Properties().tab(CreativeModeTab.TAB_MISC)));
+            () -> new BlockItem(AutoBlocks.AUTO_SMITHING_TABLE.get(), new Item.Properties().tab(AutoVanilla.creativeModeTab)));
 }

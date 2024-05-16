@@ -2,6 +2,7 @@ package org._9636dev.autovanilla;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -67,4 +68,11 @@ public class AutoVanilla {
     private void enqueueIMC(final InterModEnqueueEvent event) {
         hooks.enqueueIMC(event);
     }
+
+    public static final CreativeModeTab creativeModeTab = new CreativeModeTab(MODID) {
+        @Override
+        public net.minecraft.world.item.ItemStack makeIcon() {
+            return new net.minecraft.world.item.ItemStack(AutoItems.AUTO_SMITHING_TABLE.get());
+        }
+    };
 }

@@ -4,6 +4,6 @@
   "item.autovanilla.smithing_table": "Auto Smithing Table",
   "tooltip.autovanilla.energy_stored": "%d / %d FE",
   "title.autovanilla.jei.auto_smithing": "Auto Smithing",
-
-  "narration.autovanilla.energy_bar": "Energy stored is %d out of %d"
+  "narration.autovanilla.energy_bar": "Energy stored is %d out of %d",
+  "itemGroup.autovanilla": "Auto Vanilla"
 }

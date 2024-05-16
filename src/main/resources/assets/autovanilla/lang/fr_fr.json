@@ -1,7 +1,9 @@
 {
-  "title.autovanilla.smithing_table": "Améliorez objets(Auto)",
   "block.autovanilla.smithing_table": "Auto table de forge",
   "item.autovanilla.smithing_table": "Auto table de forge",
-  "tooltip.autovanilla.energy_stored": "%d / %d FE",
-  "title.autovanilla.jei.auto_smithing": "Auto  forgeage"
+  "itemGroup.autovanilla": "Auto Vanilla",
+  "narration.autovanilla.energy_bar": "L'énergie stockée est de %d sur %d",
+  "title.autovanilla.jei.auto_smithing": "Auto  forgeage",
+  "title.autovanilla.smithing_table": "Améliorez objets(Auto)",
+  "tooltip.autovanilla.energy_stored": "%d / %d FE"
 }
