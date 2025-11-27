@@ -1,0 +1,13 @@
+{
+  "itemGroup.autovanilla": "Example Mod Tab",
+  "block.autovanilla.example_block": "Example Block",
+  "item.autovanilla.example_item": "Example Item",
+
+  "autovanilla.configuration.title": "AutoVanilla  Configs",
+  "autovanilla.configuration.section.autovanilla.common.toml": "AutoVanilla  Configs",
+  "autovanilla.configuration.section.autovanilla.common.toml.title": "AutoVanilla  Configs",
+  "autovanilla.configuration.items": "Item List",
+  "autovanilla.configuration.logDirtBlock": "Log Dirt Block",
+  "autovanilla.configuration.magicNumberIntroduction": "Magic Number Text",
+  "autovanilla.configuration.magicNumber": "Magic Number"
+}
